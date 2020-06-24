@@ -8,25 +8,23 @@ url = 'https://api.coingecko.com/api/v3'
 def get_market_cap():
     endpoint = '/global'
     # REQUEST DATA
-    data = requests.get(url + endpoint).json()
-    result = data['data']['total_market_cap']['usd']
-    return result
+    response = requests.get(url + endpoint).json()
+    return response['data']['total_market_cap']['usd']
 
 
 def get_coin_list():
     endpoint = '/coins/list'
     # REQUEST DATA
-    data = requests.get(url + endpoint).json()
-    result = data
-    return result
+    response = requests.get(url + endpoint).json()
+    return response
 
 
 def get_price(coin, vs_currencies):
-    endpoint = f'/simple/price?ids={coin}&vs_currencies={vs_currencies}'
+    endpoint = f'/simple/price'
+    params = {"ids": coin, "vs_currencies": vs_currencies}
     # REQUEST DATA
-    data = requests.get(url + endpoint).json()
-    result = data[coin][vs_currencies]
-    return result
+    response = requests.get(url + endpoint, params=params).json()
+    return response[coin][vs_currencies]
 
 
 def get_coin_price(symbol):
@@ -39,13 +37,17 @@ def get_coin_price(symbol):
 
 
 def main():
+    print(f'Crypto Market Cap.: USD {round(get_market_cap(), 2)}')
     get_coin_price(input('COIN: '))
+    print('Source: Coingecko.com')
 
 
 if __name__ == "__main__":
     # Start counting elapsed time
     init_time = time.perf_counter()
+    # Do the thing
     main()
-    # Stopt counting elapsed time
+    # Stop counting elapsed time
     elapsed = round(time.perf_counter() - init_time, 2)
+    # Show elapsed time
     print(f' *** Elapsed time: {elapsed} s ***\n.')
