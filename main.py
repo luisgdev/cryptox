@@ -31,6 +31,7 @@ def get_coin_price(symbol):
     data = get_coin_list()
     for item in data:
         if symbol == item['symbol']:
+            print(f'ID: {item["id"]}')
             print(f'{item["name"]} ({item["symbol"].upper()})')
             print(f'USD {get_price(item["id"], "usd")}')
             print(f'BTC {get_price(item["id"], "btc")}')
