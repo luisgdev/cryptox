@@ -23,7 +23,7 @@ class Cryptox:
         endpoint = f'/simple/price'
         params = {"ids": ids, "vs_currencies": vs_currencies}
         response = requests.get(self.url + endpoint, params=params).json()
-        return response[ids][vs_currencies]
+        return response[ids]
 
     def get_coin_price(self):
         db_item = db.search(Query().symbol == self.coin)
@@ -35,8 +35,9 @@ class Cryptox:
             if self.coin == item['symbol']:
                 print(f'.\nCoingecko ID: {item["id"]}')
                 print(f'Token SYMBOL: {item["symbol"].upper()} ({item["name"]})')
-                print(f' * USD value: {self.get_price(item["id"], "usd")}')
-                print(f' * BTC value: {self.get_price(item["id"], "btc")}')
+                price = self.get_price(item["id"], "usd,btc")
+                print(f' * USD value: {price["usd"]}')
+                print(f' * BTC value: {price["btc"]}')
                 if not db_item:
                     db.insert(item)
 
