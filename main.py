@@ -1,51 +1,54 @@
+from os import path, getcwd
 from tinydb import TinyDB, Query
 import requests
 import typer
 
 
-# SETTINGS
-app = typer.Typer()
-db = TinyDB('symbols.json')
-
-
 class Cryptox:
-    def __init__(self, coin):
-        self.url = 'https://api.coingecko.com/api/v3'
-        self.db_path = 'coins.json'
-        self.coin = coin
+    def __init__(self, symbol: str):
+        self.url: str = 'https://api.coingecko.com/api/v3'
+        self.symbol: str = symbol
 
-    def get_coin_list(self):
-        endpoint = '/coins/list'
-        response = requests.get(self.url + endpoint).json()
+    def _get_coin_list(self) -> list:
+        endpoint: str = '/coins/list'
+        response: list = requests.get(self.url + endpoint).json()
         return response
 
-    def get_price(self, ids, vs_currencies):
-        endpoint = f'/simple/price'
-        params = {"ids": ids, "vs_currencies": vs_currencies}
-        response = requests.get(self.url + endpoint, params=params).json()
+    def _get_price(self, ids: str, vs_currencies: str = 'usd,btc') -> dict:
+        endpoint: str = f'/simple/price'
+        params: dict = {"ids": ids, "vs_currencies": vs_currencies}
+        response: dict = requests.get(self.url + endpoint, params=params).json()
         return response[ids]
 
-    def get_coin_price(self):
-        db_item = db.search(Query().symbol == self.coin)
+    def view_price(self, vs_pairs: str = 'usd,bnb,btc') -> None:
+        symbol_found: bool = False
+        db_item: list = db.search(Query().symbol == self.symbol)
         if db_item:
-            data = db_item
+            data: list = db_item
         else:
-            data = self.get_coin_list()
+            data: list = self._get_coin_list()
         for item in data:
-            if self.coin == item['symbol']:
+            if self.symbol == item['symbol']:
+                symbol_found = True
                 print(f'.\nCoingecko ID: {item["id"]}')
-                print(f'Token SYMBOL: {item["symbol"].upper()} ({item["name"]})')
-                price = self.get_price(item["id"], "usd,btc")
-                print(f' * USD value: {price["usd"]}')
-                print(f' * BTC value: {price["btc"]}')
+                print(f'Token SYMBOL: {self.symbol.upper()} ({item["name"]})')
+                price = self._get_price(item["id"], vs_pairs)
+                for key in price.keys():
+                    print(f' * {key.upper()} value: {price[key]}')
                 if not db_item:
                     db.insert(item)
+        if not symbol_found:
+            print(f'Error: Symbol {self.symbol.upper()} not found.')
 
+
+# SETTINGS
+app = typer.Typer()
+db = TinyDB(path.join(getcwd(), 'symbols.json'))
 
 @app.command()
-def main(name: str):
+def main(name: str, pair: str = 'usd'):
     crypto = Cryptox(name)
-    typer.echo(crypto.get_coin_price())
+    typer.echo(crypto.view_price(pair))
     typer.echo('Source: Coingecko.com')
 
 
