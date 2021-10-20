@@ -65,9 +65,9 @@ db = TinyDB(path.join(getcwd(), "symbols.json"))
 
 
 @app.command()
-def main(symbol: str, pair: str = "usd", amount: float = 0):
+def main(symbol: str, vs: str = "usd", n: float = 0):
     crypto = Cryptox(symbol)
-    crypto.view_price(pair, amount)
+    crypto.view_price(vs, n)
     typer.echo("Source: Coingecko.com")
 
 
