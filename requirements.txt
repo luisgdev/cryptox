@@ -1,0 +1,6 @@
+pydantic
+tinydb
+typer
+typing
+requests
+
