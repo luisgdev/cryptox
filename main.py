@@ -1,3 +1,7 @@
+"""
+Main file for Cryptox
+"""
+
 from os import getcwd, path
 from tinydb import Query, TinyDB
 from typing import List
@@ -23,4 +27,3 @@ def main(symbol: str, vs: str = "usd", n: float = 0):
 
 if __name__ == "__main__":
     app()
-

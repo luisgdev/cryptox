@@ -1,5 +1,5 @@
 pydantic
 tinydb
+typing
 requests
 typer
-

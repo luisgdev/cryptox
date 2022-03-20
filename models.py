@@ -9,8 +9,16 @@ import requests
 # SETTINGS
 db = TinyDB(path.join(getcwd(), "symbols.json"))
 
+COINGECKO_API_URL: str = "https://api.coingecko.com/api/v3"
+SIMPLE_PRICE_ENDPOINT: str = "/simple/price"
+COIN_LIST_ENDPOINT: str = "/coins/list"
+
 
 class Token(BaseModel):
+    """
+    Details for a crypto token
+    """
+
     id: str
     name: str
     symbol: str
@@ -20,23 +28,27 @@ class Cryptox:
     """
     Cryptocurrency price from Coingecko.
     Usage:
-        python main.py token --pair usd,btc
-        python main.py token --amount 0.5
+        python main.py <token> --pair usd,btc
+        python main.py <token> --amount 0.5
     """
 
-    def __init__(self, symbol: str):
-        self.url: str = "https://api.coingecko.com/api/v3"
+    def __init__(self: "Cryptox", symbol: str) -> None:
+        self.url: str = COINGECKO_API_URL
         self.symbol = symbol
 
-    def _get_coin_list(self) -> List[dict]:
-        endpoint: str = "/coins/list"
-        response: List[dict] = requests.get(self.url + endpoint).json()
+    def _get_coin_list(self: "Cryptox") -> List[dict]:
+        response: List[dict] = requests.get(
+            self.url + COIN_LIST_ENDPOINT
+        ).json()
         return response
 
-    def _get_price(self, id: str, vs_currencies: str = "usd,btc") -> dict:
-        endpoint: str = "/simple/price"
+    def _get_price(
+        self: "Cryptox", id: str, vs_currencies: str = "usd,btc"
+    ) -> dict:
         params: dict = {"ids": id, "vs_currencies": vs_currencies}
-        response: dict = requests.get(self.url + endpoint, params).json()
+        response: dict = requests.get(
+            self.url + SIMPLE_PRICE_ENDPOINT, params
+        ).json()
         return response[id]
 
     def view_price(self, vs_pairs: str = "usd,btc", amount: float = 0) -> None:
