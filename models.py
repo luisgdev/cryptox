@@ -1,10 +1,9 @@
 from os import getcwd, path
-from tinydb import Query, TinyDB
 from typing import List
-from pydantic import BaseModel
 
 import requests
-
+from pydantic import BaseModel
+from tinydb import Query, TinyDB
 
 # SETTINGS
 db = TinyDB(path.join(getcwd(), "symbols.json"))

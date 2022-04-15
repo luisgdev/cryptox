@@ -3,15 +3,14 @@ Main file for Cryptox
 """
 
 from os import getcwd, path
-from tinydb import Query, TinyDB
 from typing import List
-from pydantic import BaseModel
 
 import requests
 import typer
+from pydantic import BaseModel
+from tinydb import Query, TinyDB
 
 from models import Cryptox
-
 
 # SETTINGS
 app = typer.Typer()
