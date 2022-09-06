@@ -1,5 +1,6 @@
 pydantic
-tinydb
-typing
 requests
+rich
+tinydb
 typer
+typing

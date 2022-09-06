@@ -36,12 +36,18 @@ class Cryptox:
         self.symbol = symbol
 
     def _get_coin_list(self: "Cryptox") -> List[dict]:
-        response: List[dict] = requests.get(self.url + COIN_LIST_ENDPOINT).json()
+        response: List[dict] = requests.get(
+            self.url + COIN_LIST_ENDPOINT
+        ).json()
         return response
 
-    def _get_price(self: "Cryptox", id: str, vs_currencies: str = "usd,btc") -> dict:
+    def _get_price(
+        self: "Cryptox", id: str, vs_currencies: str = "usd,btc"
+    ) -> dict:
         params: dict = {"ids": id, "vs_currencies": vs_currencies}
-        response: dict = requests.get(self.url + SIMPLE_PRICE_ENDPOINT, params).json()
+        response: dict = requests.get(
+            self.url + SIMPLE_PRICE_ENDPOINT, params
+        ).json()
         return response[id]
 
     def view_price(self, vs_pairs: str = "usd,btc", amount: float = 0) -> None:
